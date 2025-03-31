@@ -25,11 +25,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
+// COMPUTER STRATEGY
+//The computer plays smarter by:
+//1. Always keeping the best dice (6s)
+//2. Usually keeping good dice (5s)
+//3. Playing safer when ahead (keeping 4+)
+//4. Taking risks when behind (only keeping 5/6)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     onNavigateBack: () -> Unit
 ) {
+
+    fun smartComputerStrategy(
+        currentDice: List<Int>,
+        myTotalScore: Int,
+        opponentTotalScore: Int
+    ): Set<Int> {
+        // Step 1: Check if we're winning or losing
+        val isWinning = myTotalScore > opponentTotalScore
+        val isLosing = myTotalScore < opponentTotalScore
+
+        // Step 2: Decide which dice to keep
+        return currentDice.mapIndexedNotNull { index, value ->
+            when {
+                // Always keep 6s
+                value == 6 -> index
+
+                // Usually keep 5s (80% chance)
+                value == 5 && Random.nextFloat() < 0.8f -> index
+
+                // If losing, take risks (only keep high numbers)
+                isLosing -> null // Throw away everything except 5s/6s
+
+                // If winning, play safe (keep decent numbers 4+)
+                isWinning && value >= 4 -> index
+
+                // Default case (neutral position)
+                value >= 4 -> index
+
+                else -> null // Throw away low numbers
+            }
+        }.toSet()
+    }
     // Game state
     var humanDice by rememberSaveable { mutableStateOf(List(5) { 1 }) }
     var computerDice by rememberSaveable { mutableStateOf(List(5) { 1 }) }
@@ -150,7 +189,7 @@ fun GameScreen(
                         }
 
                         Button(
-                            onClick = { roundCount = 1 },  // Start the game
+                            onClick = { roundCount = 1 },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 24.dp)
@@ -168,9 +207,9 @@ fun GameScreen(
                             .padding(vertical = 8.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = when (it) {
-                                GameResult.WIN -> Color(0xFFDCEDC8)  // Light green
-                                GameResult.LOSE -> Color(0xFFFFCDD2)  // Light red
-                                GameResult.TIE -> Color(0xFFE1F5FE)   // Light blue
+                                GameResult.WIN -> Color(0xFFDCEDC8)
+                                GameResult.LOSE -> Color(0xFFFFCDD2)
+                                GameResult.TIE -> Color(0xFFE1F5FE)
                             }
                         )
                     ) {
@@ -476,11 +515,12 @@ fun GameScreen(
                                         if (index in keptDiceIndices) value else (1..6).random()
                                     }
 
-                                    // Computer AI strategy - Random for now
                                     // Randomly choose which dice to keep
-                                    val computerKeptIndices = List(5) { it }
-                                        .filter { Random.nextBoolean() }
-                                        .toSet()
+                                    val computerKeptIndices = smartComputerStrategy(
+                                        currentDice = computerDice,
+                                        myTotalScore = computerCumulativeScore,
+                                        opponentTotalScore = humanCumulativeScore
+                                    )
 
                                     computerDice = computerDice.mapIndexed { index, value ->
                                         if (index in computerKeptIndices) value else (1..6).random()
@@ -519,12 +559,12 @@ fun GameScreen(
 
                                 // Computer completes its strategy
                                 // Randomly decide whether to reroll again (if possible)
-                                if (currentRollCount < maxRollsPerTurn - 1 && Random.nextBoolean()) {
-                                    // Computer rerolls once more
-                                    val computerKeptIndices = List(5) { it }
-                                        .filter { Random.nextBoolean() }
-                                        .toSet()
-
+                                if (currentRollCount < maxRollsPerTurn - 1 && Random.nextFloat() < 0.7f) {
+                                    val computerKeptIndices = smartComputerStrategy(
+                                        currentDice = computerDice,
+                                        myTotalScore = computerCumulativeScore,
+                                        opponentTotalScore = humanCumulativeScore
+                                    )
                                     computerDice = computerDice.mapIndexed { index, value ->
                                         if (index in computerKeptIndices) value else (1..6).random()
                                     }

@@ -76,12 +76,5 @@ fun MainMenu(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Version info at bottom
-        Text(
-            text = "Version 1.0",
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 32.dp)
-        )
     }
 }

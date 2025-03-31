@@ -43,13 +43,6 @@ fun AboutScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "ABOUT",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-
-                    Text(
                         text = "I confirm that I understand what plagiarism is and have read and" +
                                 "understood the section on Assessment Offences in the Essential" +
                                 "Information for Students." +
