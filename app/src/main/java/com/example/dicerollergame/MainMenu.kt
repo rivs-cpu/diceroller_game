@@ -23,7 +23,7 @@ fun MainMenu(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // App Logo/Title
+        // App Title
         Text(
             text = "Dice Roller",
             fontSize = 36.sp,

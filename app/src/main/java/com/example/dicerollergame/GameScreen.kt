@@ -26,11 +26,32 @@ import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
 // COMPUTER STRATEGY
-//The computer plays smarter by:
-//1. Always keeping the best dice (6s)
-//2. Usually keeping good dice (5s)
-//3. Playing safer when ahead (keeping 4+)
-//4. Taking risks when behind (only keeping 5/6)
+// The computer plays smarter by:
+// 1. Always keeping the best dice (6s)
+// 2. Usually keeping good dice (5s)
+// 3. Playing safer when ahead (keeping 4+)
+// 4. Taking risks when behind (only keeping 5/6)
+
+/**
+ * RESOURCES AND REFERENCES
+ *
+ * Main Development Resources:
+ * - Android Dice Roller Codelab:
+ *   https://developer.android.com/codelabs/basic-android-kotlin-compose-build-a-dice-roller-app#0
+ * - Dice Game Reference Implementation:
+ *   https://github.com/lahirutheflash/Dice-Game-Kotlin-Android
+ *
+ * Assets:
+ * - Dice vector images (modified from original):
+ *   https://github.com/google-developer-training/basic-android-kotlin-compose-training-dice-roller
+ *
+ * I confirm that I understand what plagiarism is and have read and understood
+ * the section on Assessment Offences in the Essential Information for Students.
+ * The work that I have submitted is entirely my own. Any work from other authors is duly referenced and acknowledged.
+ *
+ * Student Name: Rivini Mahadurage
+ * Student ID: 20220228 / w2052250
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +64,7 @@ fun GameScreen(
         myTotalScore: Int,
         opponentTotalScore: Int
     ): Set<Int> {
-        // Step 1: Check if we're winning or losing
+        // Step 1: Check if winning or losing
         val isWinning = myTotalScore > opponentTotalScore
         val isLosing = myTotalScore < opponentTotalScore
 
@@ -558,7 +579,6 @@ fun GameScreen(
                                 humanCumulativeScore += humanDice.sum()
 
                                 // Computer completes its strategy
-                                // Randomly decide whether to reroll again (if possible)
                                 if (currentRollCount < maxRollsPerTurn - 1 && Random.nextFloat() < 0.7f) {
                                     val computerKeptIndices = smartComputerStrategy(
                                         currentDice = computerDice,
@@ -612,6 +632,10 @@ fun GameScreen(
         }
     }
 }
+
+//Animation techniques learned from:
+// https://developer.android.com/jetpack/compose/graphics
+// https://github.com/Gianguyen1234/Interactive_DiceRoller_App.git
 
 @Composable
 fun AnimatedDiceImage(
